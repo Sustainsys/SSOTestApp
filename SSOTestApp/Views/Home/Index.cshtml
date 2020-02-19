@@ -1,8 +1,44 @@
-﻿@{
+﻿@model HomeViewModel
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <p>
+        This is a Single Sign On testing app that can be used to test the setup of a Saml2 Idp and an OIDC OP.
+    </p>
+    <div class="card">
+        @if (Model.Saml2Authentication.Succeeded)
+        {
+            <h2 class="card-header bg-success">Saml2</h2>
+            <div class="card-body">
+                <table class="table table-striped text-left">
+                    <thead>
+                        <tr>
+                            <th>Claim Type</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach(var c in Model.Saml2Authentication.Principal.Claims)
+                        {
+                            <tr>
+                                <td>@c.Type</td>
+                                <td>@c.Value</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <a class="btn btn-secondary" asp-action="Logout" asp-controller="Login" asp-route-scheme="Saml2Session">Logout</a>
+            </div>
+        }
+        else
+        {
+            <h2 class="card-header bg-info">Saml2</h2>
+            <div class="card-body">
+                <a class="btn btn-primary" asp-action="Login" asp-controller="Login" asp-route-scheme="Saml2">Login</a>
+            </div>
+        }
+    </div>
 </div>

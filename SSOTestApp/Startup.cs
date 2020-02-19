@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Sustainsys.Saml2;
+using Sustainsys.Saml2.Configuration;
+using Sustainsys.Saml2.Metadata;
 
 namespace SSOTestApp
 {
@@ -20,10 +23,36 @@ namespace SSOTestApp
 
         public IConfiguration Configuration { get; }
 
+        public const string OidcSession = nameof(OidcSession);
+        public const string Saml2Session = nameof(Saml2Session);
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            services.AddAuthentication()
+                .AddCookie(OidcSession)
+                .AddCookie(Saml2Session)
+                .AddSaml2(opt =>
+                {
+                    opt.SignInScheme = Saml2Session;
+
+                    opt.SPOptions = new SPOptions
+                    {
+                        EntityId = new EntityId("urn:SSOTestApp")
+                    };
+
+                    opt.IdentityProviders.Add(new IdentityProvider(
+                        new EntityId(Configuration["Saml2:IdpEntityId"]), opt.SPOptions)
+                    {
+                        MetadataLocation = Configuration["Saml2:IdpMetadata"]
+                    });
+                });
+
+#if DEBUG
+            services.AddRazorPages().AddRazorRuntimeCompilation();
+#endif
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,6 +72,8 @@ namespace SSOTestApp
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
