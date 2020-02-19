@@ -24,7 +24,7 @@
         </div>
     </div>
     <div class="card mt-5">
-        <h2 class="card-header @(Model.Saml2Authentication.Succeeded ? "bg-success" : "bg-info")">OpenID Connect</h2>
+        <h2 class="card-header @(Model.OidcAuthentication.Succeeded ? "bg-success" : "bg-info")">OpenID Connect</h2>
         <div class="card-body">
             @if (Model.OidcAuthentication.Succeeded)
             {
