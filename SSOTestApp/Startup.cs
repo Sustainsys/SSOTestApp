@@ -48,6 +48,23 @@ namespace SSOTestApp
                     {
                         MetadataLocation = Configuration["Saml2:IdpMetadata"]
                     });
+                })
+                .AddOpenIdConnect(opt =>
+                {
+                    opt.SignInScheme = OidcSession;
+
+                    opt.Authority = Configuration["Oidc:Authority"];
+                    opt.ClientId = Configuration["Oidc:ClientId"];
+                    opt.ClientSecret = Configuration["Oidc:ClientSecret"];
+
+                    opt.ResponseType = "code";
+                    opt.UsePkce = true;
+
+                    opt.Scope.Add("openid");
+                    opt.Scope.Add("profile");
+                    opt.Scope.Add("api");
+
+                    opt.SaveTokens = true;
                 });
 
 #if DEBUG

@@ -7,7 +7,7 @@
     <h1 class="display-4">Welcome</h1>
     <p>
         This is a Single Sign On testing app that can be used to test the setup of a Saml2 Idp and an OIDC OP.
-        The complete source code is available on <a href="https://github.com/AndersAbel/SSOTestApp">https://github.com/AndersAbel/SSOTestApp</a>.
+        The complete source code is available on <a href="https://github.com/Sustainsys/SSOTestApp">https://github.com/Sustainsys/SSOTestApp</a>.
     </p>
     <div class="card">
         <h2 class="card-header @(Model.Saml2Authentication.Succeeded ? "bg-success": "bg-info")">Saml2</h2>
@@ -23,13 +23,22 @@
             }
         </div>
     </div>
-    <div class="card">
+    <div class="card mt-5">
         <h2 class="card-header @(Model.Saml2Authentication.Succeeded ? "bg-success" : "bg-info")">OpenID Connect</h2>
         <div class="card-body">
             @if (Model.OidcAuthentication.Succeeded)
             {
-                <partial name="_ClaimsTable" model="@Model.OidcAuthentication"/>
-                <a class="btn btn-secondary" asp-action="Logout" asp-controller="Login" asp-route-scheme="OidcSession">Logout</a>
+                <partial name="_ClaimsTable" model="@Model.OidcAuthentication" />
+                <div class="form-group text-left">
+                    <label class="font-weight-bold">id_token</label>
+                    <div class="border bg-light">@Model.OidcAuthentication.Properties.Items[".Token.id_token"]</div>
+                </div>
+                <div class="form-group text-left">
+                    <label class="font-weight-bold">access_token</label>
+                    <div class="border bg-light">@Model.OidcAuthentication.Properties.Items[".Token.access_token"]</div>
+                </div>
+                <div class="font-italic">Use <a href="https://jwt.io">https://jwt.io</a> to decode/inspect tokens.</div>
+                <a class="btn btn-secondary mt-3" asp-action="Logout" asp-controller="Login" asp-route-scheme="OidcSession">Logout</a>
             }
             else
             {
