@@ -10,5 +10,6 @@ namespace SSOTestApp.Models
     public class HomeViewModel
     {
         public AuthenticateResult Saml2Authentication { get; set; }
+        public AuthenticateResult OidcAuthentication { get; internal set; }
     }
 }

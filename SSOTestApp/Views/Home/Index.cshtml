@@ -1,44 +1,40 @@
 ﻿@model HomeViewModel
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "SSO Test";
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>
         This is a Single Sign On testing app that can be used to test the setup of a Saml2 Idp and an OIDC OP.
+        The complete source code is available on <a href="https://github.com/AndersAbel/SSOTestApp">https://github.com/AndersAbel/SSOTestApp</a>.
     </p>
     <div class="card">
-        @if (Model.Saml2Authentication.Succeeded)
-        {
-            <h2 class="card-header bg-success">Saml2</h2>
-            <div class="card-body">
-                <table class="table table-striped text-left">
-                    <thead>
-                        <tr>
-                            <th>Claim Type</th>
-                            <th>Value</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach(var c in Model.Saml2Authentication.Principal.Claims)
-                        {
-                            <tr>
-                                <td>@c.Type</td>
-                                <td>@c.Value</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+        <h2 class="card-header @(Model.Saml2Authentication.Succeeded ? "bg-success": "bg-info")">Saml2</h2>
+        <div class="card-body">
+            @if (Model.Saml2Authentication.Succeeded)
+            {
+                <partial name="_ClaimsTable" model="@Model.Saml2Authentication" />
                 <a class="btn btn-secondary" asp-action="Logout" asp-controller="Login" asp-route-scheme="Saml2Session">Logout</a>
-            </div>
-        }
-        else
-        {
-            <h2 class="card-header bg-info">Saml2</h2>
-            <div class="card-body">
+            }
+            else
+            {
                 <a class="btn btn-primary" asp-action="Login" asp-controller="Login" asp-route-scheme="Saml2">Login</a>
-            </div>
-        }
+            }
+        </div>
+    </div>
+    <div class="card">
+        <h2 class="card-header @(Model.Saml2Authentication.Succeeded ? "bg-success" : "bg-info")">OpenID Connect</h2>
+        <div class="card-body">
+            @if (Model.OidcAuthentication.Succeeded)
+            {
+                <partial name="_ClaimsTable" model="@Model.OidcAuthentication"/>
+                <a class="btn btn-secondary" asp-action="Logout" asp-controller="Login" asp-route-scheme="OidcSession">Logout</a>
+            }
+            else
+            {
+                <a class="btn btn-primary" asp-action="Login" asp-controller="Login" asp-route-scheme="OpenIdConnect">Login</a>
+            }
+        </div>
     </div>
 </div>

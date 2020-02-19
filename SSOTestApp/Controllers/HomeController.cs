@@ -23,7 +23,8 @@ namespace SSOTestApp.Controllers
         {
             var model = new HomeViewModel
             {
-                Saml2Authentication = await HttpContext.AuthenticateAsync(Startup.Saml2Session)
+                Saml2Authentication = await HttpContext.AuthenticateAsync(Startup.Saml2Session),
+                OidcAuthentication = await HttpContext.AuthenticateAsync(Startup.OidcSession)
             };
 
             return View(model);
